@@ -9,7 +9,10 @@ function ShowCard({ title, year }: ShowCardProps) {
     return (
         <Card sx={{ mb: 2 }}>
             <CardContent>
-                <Typography variant="h6">{title}{year ? ` (${year})` : ""}</Typography>
+                <Typography variant="h6">
+                    {title}
+                    {year ? ` (${year})` : ""}
+                </Typography>
             </CardContent>
         </Card>
     );
