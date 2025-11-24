@@ -1,6 +1,6 @@
-import {Box, Typography, Card, CardContent, CardMedia} from "@mui/material";
+import { Box, Typography, Card, CardContent, CardMedia } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 function FavoritesPage() {
     return (
@@ -10,10 +10,9 @@ function FavoritesPage() {
                 <Typography variant="h4">Favorites</Typography>
             </Box>
 
-            <Grid container spacing={2}>
-                {/* FIX this grid ugh */}
-                {[1,2,3,4].map((i) => (
-                    <Grid item xs={12} sm={3} key={i}>
+            <Grid container spacing={{ xs: 12, sm: 3 }}>
+                {[1, 2, 3, 4].map((i) => (
+                    <Grid key={i}>
                         <Card>
                             <CardMedia
                                 component="img"

@@ -4,24 +4,72 @@ import ShowCard from "../components/ShowCard";
 function SearchPage() {
     return (
         <Box>
-            <Typography variant="h5" gutterBottom>Search</Typography>
-            <TextField fullWidth label="Search by title or keywords" sx={{ mb: 2 }} />
+            <Typography variant="h5" gutterBottom>
+                Search
+            </Typography>
+            <TextField
+                fullWidth
+                label="Search by title or keywords"
+                sx={{ mb: 2 }}
+            />
 
-            <Grid container spacing={2}>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Type</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Year</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Category</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Tags</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Country</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Streaming</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Popularity</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Rating</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Actor/Director</Button></Grid>
-                <Grid item xs={6} md={3}><Button fullWidth variant="outlined">Status</Button></Grid>
+            <Grid container spacing={{ xs: 2, md: 3 }}>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Type
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Year
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Category
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Tags
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Country
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Streaming
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Popularity
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Rating
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Actor/Director
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button fullWidth variant="outlined">
+                        Status
+                    </Button>
+                </Grid>
             </Grid>
 
             <Box sx={{ mt: 4 }}>
-                {[1,2,3].map((i) => <ShowCard key={i} title="Title" year="year" />)}
+                {[1, 2, 3].map((i) => (
+                    <ShowCard key={i} title="Title" year="year" />
+                ))}
             </Box>
         </Box>
     );
