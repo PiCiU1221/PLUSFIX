@@ -1,7 +1,7 @@
 import { Box, Container } from "@mui/material";
-import Header from "./Header";
+import Header from "../components/Header.tsx";
 import { useState } from "react";
-import SideDrawer from "./SideDrawer";
+import SideDrawer from "../components/SideDrawer.tsx";
 
 function Layout({ children }: { children: React.ReactNode }) {
     const [drawerOpen, setDrawerOpen] = useState(false);

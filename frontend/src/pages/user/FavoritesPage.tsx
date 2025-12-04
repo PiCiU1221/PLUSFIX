@@ -16,7 +16,7 @@ function FavoritesPage() {
                         <Card>
                             <CardMedia
                                 component="img"
-                                height="full"
+                                height="500"
                                 image="https://i.ebayimg.com/images/g/fA0AAOSwPixn-Yfn/s-l1200.png"
                                 alt="Title poster"
                             />
