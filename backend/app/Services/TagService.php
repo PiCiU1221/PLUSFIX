@@ -18,9 +18,4 @@ class TagService
 
         return $tags->toArray();
     }
-
-    public function getAll(): array
-    {
-        return Tag::select('id', 'name')->get()->toArray();
-    }
 }
