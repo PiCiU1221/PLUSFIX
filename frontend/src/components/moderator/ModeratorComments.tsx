@@ -25,7 +25,6 @@ export default function ModeratorComments() {
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchComments = useCallback(async () => {
         setLoading(true);
         try {
@@ -43,7 +42,10 @@ export default function ModeratorComments() {
                 }
             });
 
-            if (!response.ok) throw new Error("Failed to fetch comments");
+            if (!response.ok) {
+                showMessage("Failed to fetch comments", "error");
+                return;
+            }
 
             const data = await response.json();
             setComments(data);
@@ -79,7 +81,10 @@ export default function ModeratorComments() {
                 body: JSON.stringify({ content: newContent })
             });
 
-            if (!response.ok) throw new Error("Failed to update comment");
+            if (!response.ok) {
+                showMessage("Failed to update comment", "error");
+                return;
+            }
 
             setComments(prev => prev.map(c =>
                 c.id === editingComment.id ? { ...c, content: newContent } : c
@@ -109,7 +114,10 @@ export default function ModeratorComments() {
                 }
             });
 
-            if (!response.ok) throw new Error("Failed to delete comment");
+            if (!response.ok) {
+                showMessage("Failed to delete comment", "error");
+                return;
+            }
 
             setComments(prev => prev.filter(c => c.id !== deleteId));
             showMessage("Comment deleted successfully", "success");

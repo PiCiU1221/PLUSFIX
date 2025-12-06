@@ -19,7 +19,10 @@ export default function ModeratorCsvManager() {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
 
-            if (!response.ok) throw new Error("Failed to download CSV");
+            if (!response.ok) {
+                showMessage("Failed to download CSV", "error");
+                return;
+            }
 
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -59,7 +62,8 @@ export default function ModeratorCsvManager() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Upload failed");
+                showMessage(data.message || "Upload failed", "error");
+                return;
             }
 
             showMessage(data.message || "Shows updated successfully", "success");
