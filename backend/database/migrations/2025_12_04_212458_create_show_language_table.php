@@ -8,18 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('person_show', function (Blueprint $table) {
+        Schema::create('show_language', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('person_id')->constrained('persons')->onDelete('cascade');
             $table->foreignId('show_id')->constrained('shows')->onDelete('cascade');
+            $table->foreignId('language_id')->constrained('languages')->onDelete('cascade');
             $table->timestamps();
-
-            $table->unique(['person_id','show_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('person_show');
+        Schema::dropIfExists('show_language');
     }
 };

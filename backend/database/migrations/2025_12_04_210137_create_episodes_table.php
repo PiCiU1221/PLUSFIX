@@ -8,17 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('moderators', function (Blueprint $table) {
+        Schema::create('episodes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('password');
+            $table->foreignId('season_id')->constrained('seasons')->onDelete('cascade');
+            $table->integer('episode_number');
+            $table->string('title');
             $table->timestamps();
         });
+
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('moderators');
+        Schema::dropIfExists('episodes');
     }
 };
-

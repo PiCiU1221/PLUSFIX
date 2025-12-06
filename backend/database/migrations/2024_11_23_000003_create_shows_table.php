@@ -10,16 +10,13 @@ return new class extends Migration
     {
         Schema::create('shows', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); // Film / Serial
+            $table->foreignId('type_id')->constrained('show_types');
+            $table->string('title');
             $table->decimal('rating', 3, 1)->nullable();
-            $table->integer('seasons')->nullable(); // Tylko dla seriali
-            $table->integer('length')->nullable(); // Czas trwania w minutach
-            $table->string('country')->nullable();
-            $table->date('release_date')->nullable();
-            $table->string('status')->nullable(); // Ongoing / Finished
+            $table->integer('release_year')->nullable();
             $table->decimal('popularity', 5, 2)->nullable();
             $table->text('description')->nullable();
-            $table->string('languages')->nullable();
+            $table->string('cover_url')->nullable();
             $table->timestamps();
         });
     }
