@@ -28,7 +28,7 @@ class ShowsTableSeeder extends Seeder
             'title' => 'F1',
             'release_year' => 2025,
             'description' => 'Sonny Hayes, a Formula One driver who raced in the 1990s, has a horrible crash, forcing him to retire from Formula One and start racing in other disciplines. A Formula One team owner and friend contacts Hayes and asks him to come out of retirement to mentor rookie prodigy Joshua Pearce on the Apex Grand Prix team.',
-            'cover_url' => 'https://en.wikipedia.org/wiki/F1_%28film%29',
+            'cover_url' => 'https://upload.wikimedia.org/wikipedia/en/3/38/F1_%282025_film%29.png',
             'rating' => 0,
             'popularity' => 0
         ]);
