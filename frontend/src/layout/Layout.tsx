@@ -9,7 +9,13 @@ function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <SnackbarProvider>
-            <Box>
+            <Box
+                sx={{
+                    width: '100vw',
+                    height: '100vh',
+                    overflowX: "hidden",
+                }}
+            >
                 <Header onMenuClick={() => setDrawerOpen(true)} />
 
                 <SideDrawer
