@@ -2,93 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
+use App\Services\CommentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
 
 class CommentController extends Controller
 {
-    public function index()
+    protected CommentService $commentService;
+
+    public function __construct(CommentService $commentService)
     {
-        $comments = Comment::with(['user', 'shows'])->paginate(20);
+        $this->commentService = $commentService;
+
+        $this->middleware('auth:sanctum')->except('store');
+    }
+
+    /**
+     * POST /api/shows/{id}/comments
+     */
+    public function store(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $comment = $this->commentService->addCommentToShow($id, $request->input('content'));
+
+        if (!$comment) {
+            return response()->json(['message' => 'Show not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $comment->id,
+            'content' => $comment->content,
+            'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $comment->updated_at->format('Y-m-d H:i:s'),
+        ], 201);
+    }
+
+    /**
+     * GET /api/moderator/comments
+     */
+    public function index(): JsonResponse
+    {
+        $comments = $this->commentService->getAllComments();
         return response()->json($comments);
     }
 
-    public function store(Request $request)
+    /**
+     * PUT /api/moderator/comments/{id}
+     */
+    public function update(Request $request, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'value' => 'required|string',
-            'show_id' => 'required|exists:shows,id',
+        $request->validate([
+            'content' => 'required|string|max:1000',
         ]);
 
-        $comment = Comment::create([
-            'value' => $validated['value'],
-            'user_id' => Auth::id(),
-        ]);
+        $comment = $this->commentService->updateComment($id, $request->input('content'));
 
-        $comment->shows()->attach($validated['show_id']);
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
 
-        return response()->json($comment->load(['user', 'shows']), 201);
-    }
-
-    public function show($id)
-    {
-        $comment = Comment::with(['user', 'shows'])->findOrFail($id);
         return response()->json($comment);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * DELETE /api/moderator/comments/{id}
+     */
+    public function destroy(int $id): JsonResponse
     {
-        $comment = Comment::findOrFail($id);
+        $deleted = $this->commentService->deleteComment($id);
 
-        // Sprawdź czy użytkownik jest właścicielem komentarza
-        if ($comment->user_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        if (!$deleted) {
+            return response()->json(['message' => 'Comment not found'], 404);
         }
 
-        $validated = $request->validate([
-            'value' => 'required|string',
-        ]);
-
-        $comment->update($validated);
-
-        return response()->json($comment->load(['user', 'shows']));
-    }
-
-    public function destroy($id)
-    {
-        $comment = Comment::findOrFail($id);
-
-        // Sprawdź czy użytkownik jest właścicielem komentarza
-        if ($comment->user_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $comment->delete();
-
-        return response()->json(['message' => 'Comment deleted successfully'], 200);
-    }
-
-    public function getByShow($showId)
-    {
-        $comments = Comment::with('user')
-            ->whereHas('shows', function ($query) use ($showId) {
-                $query->where('show_id', $showId);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($comments);
-    }
-
-    public function getByUser($userId)
-    {
-        $comments = Comment::with('shows')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($comments);
+        return response()->json(['message' => 'Comment deleted successfully']);
     }
 }
-

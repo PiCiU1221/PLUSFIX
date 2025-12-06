@@ -8,17 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('show_id')->constrained('shows')->onDelete('cascade');
-            $table->text('content');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('countries');
     }
 };
-
