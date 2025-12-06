@@ -22,7 +22,9 @@ class PersonController extends Controller
     public function search(Request $request): JsonResponse
     {
         $query = $request->get('q', '');
-        $results = $this->personService->search($query);
+        $limit = (int) $request->get('limit', 5);
+
+        $results = $this->personService->search($query, $limit);
 
         return response()->json($results);
     }
