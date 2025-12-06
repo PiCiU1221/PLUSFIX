@@ -44,9 +44,19 @@ class CommentController extends Controller
     /**
      * GET /api/moderator/comments
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $comments = $this->commentService->getAllComments();
+        $filters = $request->only([
+            'date_from',
+            'date_to',
+        ]);
+
+        $sort = [
+            'created_at' => $request->input('sort') === 'oldest' ? 'asc' : 'desc',
+        ];
+
+        $comments = $this->commentService->getFilteredComments($filters, $sort);
+
         return response()->json($comments);
     }
 

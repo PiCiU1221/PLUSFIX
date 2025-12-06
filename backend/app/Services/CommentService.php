@@ -23,14 +23,30 @@ class CommentService
         return $comment;
     }
 
-    public function getAllComments(): array
+    public function getFilteredComments(array $filters = [], array $sort = []): array
     {
-        return Comment::with('show:id,title')
-            ->get()
+        $query = Comment::with('show:id,title');
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        if (!empty($sort['created_at'])) {
+            $query->orderBy('created_at', strtolower($sort['created_at']) === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        return $query->get()
             ->map(fn($c) => [
                 'id' => $c->id,
                 'show' => $c->show->title ?? null,
                 'content' => $c->content,
+                'rating' => $c->rating ?? null,
                 'created_at' => $c->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $c->updated_at->format('Y-m-d H:i:s'),
             ])->toArray();
@@ -70,7 +86,7 @@ class CommentService
             $show->popularity = $show->ratings()->count() + $show->comments()->count();
             $show->save();
         }
-        
+
         return true;
     }
 }
