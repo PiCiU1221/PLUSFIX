@@ -2,70 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Person;
+use App\Services\PersonService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class PersonController extends Controller
 {
-    public function index()
+    protected PersonService $personService;
+
+    public function __construct(PersonService $personService)
     {
-        $persons = Person::with('shows')->paginate(20);
-        return response()->json($persons);
+        $this->personService = $personService;
     }
 
-    public function store(Request $request)
+    /**
+     * GET /api/persons/search?q=Leonardo
+     */
+    public function search(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-        ]);
+        $query = $request->get('q', '');
+        $results = $this->personService->search($query);
 
-        $person = Person::create($validated);
-
-        return response()->json($person, 201);
-    }
-
-    public function show($id)
-    {
-        $person = Person::with('shows')->findOrFail($id);
-        return response()->json($person);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $person = Person::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'type' => 'sometimes|string|max:255',
-        ]);
-
-        $person->update($validated);
-
-        return response()->json($person);
-    }
-
-    public function destroy($id)
-    {
-        $person = Person::findOrFail($id);
-        $person->delete();
-
-        return response()->json(['message' => 'Person deleted successfully'], 200);
-    }
-
-    public function search(Request $request)
-    {
-        $query = Person::query();
-
-        if ($request->has('type')) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        return response()->json($query->paginate(20));
+        return response()->json($results);
     }
 }
-
