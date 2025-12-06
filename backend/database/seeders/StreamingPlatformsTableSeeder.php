@@ -9,7 +9,8 @@ class StreamingPlatformsTableSeeder extends Seeder
 {
     public function run()
     {
-        $platforms = ['Netflix', 'HBO Max', 'Disney+', 'Amazon Prime', 'Hulu'];
+        $platforms = ['Apple TV+', 'Warner Bros. Pictures', 'Netflix', 'AMC', 'BBC iPlayer', 'Peacock', 'Disney+', 'Amazon Prime Video'];
+
         foreach ($platforms as $platform) {
             StreamingPlatform::create(['name' => $platform]);
         }

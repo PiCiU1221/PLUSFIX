@@ -9,7 +9,7 @@ class CountriesTableSeeder extends Seeder
 {
     public function run()
     {
-        $countries = ['USA', 'UK', 'Canada', 'France', 'Japan', 'Germany'];
+        $countries = ['USA', 'UK'];
 
         foreach ($countries as $country) {
             Country::create(['name' => $country]);
