@@ -25,9 +25,8 @@ function App({ mode, setMode }: AppProps) {
         { path: "/details/:id", element: <ShowDetailsPage /> },
         { path: "/rate/:id", element: <RatingPage /> },
         { path: "/moderator-login", element: <ModeratorLogin /> },
-        { path: "/moderator", element: <ModeratorDashboard /> },
+        { path: "/moderator-dashboard", element: <ModeratorDashboard /> },
 
-        // dark mode setters for the SettingsPage
         { path: "/settings", element: <SettingsPage mode={mode} setMode={setMode} /> },
     ];
 
