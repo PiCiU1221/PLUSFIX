@@ -1,6 +1,11 @@
 import { Box, Typography, Paper, Divider, Switch, FormControlLabel } from "@mui/material";
 
-export default function SettingsPage() {
+type SettingsPageProps = {
+    mode: "light" | "dark";
+    setMode: React.Dispatch<React.SetStateAction<"light" | "dark">>;
+};
+
+export default function SettingsPage({ mode, setMode }: SettingsPageProps) {
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
@@ -29,7 +34,12 @@ export default function SettingsPage() {
                 />
 
                 <FormControlLabel
-                    control={<Switch />}
+                    control={
+                        <Switch
+                            checked={mode === "dark"}
+                            onChange={() => setMode(mode === "light" ? "dark" : "light")}
+                        />
+                    }
                     label="Dark mode"
                 />
 
