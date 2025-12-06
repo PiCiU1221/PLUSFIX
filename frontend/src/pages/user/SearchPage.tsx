@@ -1,5 +1,5 @@
 import { Box, Typography, TextField, Grid, Button } from "@mui/material";
-import ShowCard from "../components/ShowCard";
+import ShowCard from "../../components/ShowCard.tsx";
 
 function SearchPage() {
     return (
