@@ -44,7 +44,8 @@ export default function ModeratorLogin() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Login failed");
+                setError(data.message || "Login failed");
+                return;
             }
 
             localStorage.setItem("auth_token", data.token);
