@@ -1,10 +1,8 @@
-import {
-    Box, Button, Container, Typography,
-    TextField, MenuItem, Paper, Rating,
-    Dialog, DialogContent, DialogTitle, DialogActions
-} from "@mui/material";
-import { useState } from "react";
-import type { CommentData } from "../../types/CommentData.tsx";
+import { Box, Button, Container, Typography, TextField, MenuItem, Paper, Rating, Dialog, DialogContent, DialogTitle, DialogActions } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import type { CommentData } from "../../types/CommentData";
+import { useAuth } from "../../hooks/useAuth";
 
 const mockComments: CommentData[] = [
     { id: 1, text: "I love it!", rating: 5 },
@@ -13,8 +11,23 @@ const mockComments: CommentData[] = [
 ];
 
 export default function ModeratorDashboard() {
+    const navigate = useNavigate();
+    const { isLoggedIn } = useAuth();
+
+    const isAuthenticated = isLoggedIn();
+
     const [tab, setTab] = useState<'comments' | 'upload'>('comments');
     const [editingComment, setEditingComment] = useState<CommentData | null>(null);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/moderator-login", { replace: true });
+        }
+    }, [isAuthenticated, navigate]);
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <Container sx={{ mt: 4 }}>
