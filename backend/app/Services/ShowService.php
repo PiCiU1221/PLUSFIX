@@ -90,7 +90,6 @@ class ShowService
                     ->with('role:id,name');
             },
             'tags:id,name',
-            'languages:id,name',
             'countries:id,name',
             'seriesMeta.seasons.episodes:id,season_id,episode_number,title',
             'comments:id,show_id,content'
@@ -111,7 +110,6 @@ class ShowService
             'cover_url' => $show->cover_url,
             'categories' => $show->categories->pluck('name'),
             'tags' => $show->tags->pluck('name'),
-            'languages' => $show->languages->pluck('name'),
             'countries' => $show->countries->pluck('name'),
             'streaming_platforms' => $show->streamingPlatforms->pluck('name'),
             'persons' => $show->persons->map(function ($p) {

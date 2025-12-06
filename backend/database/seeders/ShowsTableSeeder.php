@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Show;
 use App\Models\ShowType;
 use App\Models\Category;
-use App\Models\Language;
 use App\Models\Country;
 use App\Models\Tag;
 use App\Models\SeriesMeta;
@@ -35,7 +34,6 @@ class ShowsTableSeeder extends Seeder
         ]);
 
         $movie->categories()->attach(Category::where('name','Action')->first());
-        $movie->languages()->attach(Language::where('name','English')->first());
         $movie->countries()->attach(Country::where('name','USA')->first());
         $movie->tags()->attach(Tag::where('name','Adventure')->first());
 
@@ -52,7 +50,6 @@ class ShowsTableSeeder extends Seeder
         ]);
 
         $serial->categories()->attach(Category::where('name','Sci-Fi')->first());
-        $serial->languages()->attach(Language::where('name','English')->first());
         $serial->countries()->attach(Country::where('name','USA')->first());
         $serial->tags()->attach(Tag::where('name','Space')->first());
 
@@ -91,7 +88,6 @@ class ShowsTableSeeder extends Seeder
             ]);
 
             $extra->categories()->attach(Category::inRandomOrder()->first());
-            $extra->languages()->attach(Language::inRandomOrder()->first());
             $extra->countries()->attach(Country::inRandomOrder()->first());
             $extra->tags()->attach(Tag::inRandomOrder()->first());
             $extra->streamingPlatforms()->attach(StreamingPlatform::inRandomOrder()->take(2)->pluck('id'));

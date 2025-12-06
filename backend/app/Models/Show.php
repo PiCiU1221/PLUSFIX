@@ -58,11 +58,6 @@ class Show extends Model
         return $this->hasOne(SeriesMeta::class);
     }
 
-    public function languages()
-    {
-        return $this->belongsToMany(Language::class, 'show_language')->withTimestamps();
-    }
-
     public function countries()
     {
         return $this->belongsToMany(Country::class, 'show_country')->withTimestamps();
