@@ -213,10 +213,13 @@ function ShowDetailsPage() {
                             <ListItem key={comment.id} alignItems="flex-start" sx={{ bgcolor: 'background.paper', mb: 2, borderRadius: 1, boxShadow: 1 }}>
                                 <ListItemText
                                     primary={
-                                        <Typography variant="body1" sx={{ mb: 1 }}>
+                                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
                                             {comment.content}
                                         </Typography>
                                     }
+                                    slotProps={{
+                                        secondary: { component: "div" }
+                                    }}
                                     secondary={
                                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                                             <Typography variant="caption" color="text.secondary">
