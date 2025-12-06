@@ -8,17 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('seasons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('show_id')->constrained('shows')->onDelete('cascade');
-            $table->text('content');
+            $table->foreignId('series_meta_id')->constrained('series_metas')->onDelete('cascade');
+            $table->integer('season_number');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('seasons');
     }
 };
-
