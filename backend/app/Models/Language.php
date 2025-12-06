@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Language extends Model
 {
     protected $fillable = ['name'];
 
     public function shows()
     {
-        return $this->belongsToMany(Show::class, 'show_category')->withTimestamps();
+        return $this->belongsToMany(Show::class, 'show_language')->withTimestamps();
     }
 }
-

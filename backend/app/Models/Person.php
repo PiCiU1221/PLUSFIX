@@ -2,25 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Person extends Model
 {
-    use HasFactory;
-
     protected $table = 'persons';
 
-    protected $fillable = [
-        'name',
-        'type',
-    ];
+    protected $fillable = ['name', 'role_id'];
 
-    public function shows(): BelongsToMany
+    public function role()
     {
-        return $this->belongsToMany(Show::class, 'person_show')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->belongsTo(Role::class);
+    }
+
+    public function shows()
+    {
+        return $this->belongsToMany(Show::class, 'person_show')->withTimestamps();
     }
 }

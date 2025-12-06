@@ -7,19 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Moderator extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'password',
-        'creation_date',
-    ];
-
-    protected $hidden = [
-        'password',
-    ];
-
-    protected $casts = [
-        'creation_date' => 'datetime',
-    ];
+    protected $fillable = ['name', 'password'];
 }

@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StreamingPlatform extends Model
 {
-    use HasFactory;
+    protected $fillable = ['name'];
 
-    protected $fillable = [
-        'name',
-    ];
-
-    public function shows(): BelongsToMany
+    public function shows()
     {
-        return $this->belongsToMany(Show::class, 'show_streaming_platform');
+        return $this->belongsToMany(Show::class, 'show_streaming_platform')->withTimestamps();
     }
 }
 

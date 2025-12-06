@@ -2,28 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Comment extends Model
 {
-    use HasFactory;
+    protected $fillable = ['show_id', 'content'];
 
-    protected $fillable = [
-        'value',
-        'user_id',
-    ];
-
-    public function user(): BelongsTo
+    public function show()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function shows(): BelongsToMany
-    {
-        return $this->belongsToMany(Show::class, 'show_comment');
+        return $this->belongsTo(Show::class);
     }
 }
-

@@ -8,47 +8,63 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Show extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'type',
+        'type_id',
+        'title',
         'rating',
-        'seasons',
-        'length',
-        'country',
-        'release_date',
-        'status',
+        'release_year',
         'popularity',
         'description',
-        'languages',
+        'cover_url',
     ];
 
-    protected $casts = [
-        'release_date' => 'date',
-        'rating' => 'decimal:1',
-        'popularity' => 'decimal:2',
-    ];
-
-    public function categories(): BelongsToMany
+    public function type()
     {
-        return $this->belongsToMany(Category::class, 'show_category');
+        return $this->belongsTo(ShowType::class, 'type_id');
     }
 
-    public function streamingPlatforms(): BelongsToMany
+    public function categories()
     {
-        return $this->belongsToMany(StreamingPlatform::class, 'show_streaming_platform');
+        return $this->belongsToMany(Category::class, 'show_category')->withTimestamps();
     }
 
-    public function comments(): BelongsToMany
+    public function streamingPlatforms()
     {
-        return $this->belongsToMany(Comment::class, 'show_comment');
+        return $this->belongsToMany(StreamingPlatform::class, 'show_streaming_platform')->withTimestamps();
     }
 
-    public function persons(): BelongsToMany
+    public function persons()
     {
-        return $this->belongsToMany(Person::class, 'person_show')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->belongsToMany(Person::class, 'person_show')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'show_tag')->withTimestamps();
+    }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(Rating::class, 'show_rating')->withTimestamps();
+    }
+
+    public function seriesMeta()
+    {
+        return $this->hasOne(SeriesMeta::class);
+    }
+
+    public function languages()
+    {
+        return $this->belongsToMany(Language::class, 'show_language')->withTimestamps();
+    }
+
+    public function countries()
+    {
+        return $this->belongsToMany(Country::class, 'show_country')->withTimestamps();
     }
 }
-
