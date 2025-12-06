@@ -22,7 +22,7 @@ function Header({ onMenuClick }: HeaderProps) {
                     sx={{ flexGrow: 1, marginLeft: 2, cursor: "pointer" }}
                     onClick={() => navigate("/")}
                 >
-                    PLUSFIX
+                    PLUSFIX ᐅ
                 </Typography>
 
                 <IconButton color="inherit" component={Link} to="/search">

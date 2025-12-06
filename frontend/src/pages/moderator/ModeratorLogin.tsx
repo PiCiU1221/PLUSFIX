@@ -8,11 +8,12 @@ import {
 } from "@mui/material";
 
 export default function ModeratorLogin() {
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
     const handleLogin = () => {
-        if (password === "moderator123") {
+        if (password === "moderator123" && email.length > 0) {
             window.location.href = "/moderator";
         } else {
             setError("Invalid moderator password");
@@ -25,6 +26,15 @@ export default function ModeratorLogin() {
                 <Typography variant="h5" gutterBottom>
                     Moderator Login
                 </Typography>
+
+                <TextField
+                    fullWidth
+                    type="email"
+                    label="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
 
                 <TextField
                     fullWidth
