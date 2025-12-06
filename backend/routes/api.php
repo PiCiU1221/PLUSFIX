@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\RatingsController;
 use App\Http\Controllers\ShowController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,6 +18,8 @@ Route::get('/shows/{id}', [ShowController::class, 'show']);
 Route::post('/shows/{id}/comments', [CommentController::class, 'store']);
 
 Route::post('/shows/{id}/ratings', [RatingsController::class, 'store']);
+
+Route::get('/tags/search', [TagController::class, 'search']);
 
 Route::get('/persons/search', [PersonController::class, 'search']);
 

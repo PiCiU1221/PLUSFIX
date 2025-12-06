@@ -92,7 +92,7 @@ class ShowService
             'tags:id,name',
             'countries:id,name',
             'seriesMeta.seasons.episodes:id,season_id,episode_number,title',
-            'comments:id,show_id,content'
+            'comments'
         ])->find($id);
 
         if (!$show) {
@@ -135,8 +135,8 @@ class ShowService
             'comments' => $show->comments->map(fn($c) => [
                 'id' => $c->id,
                 'content' => $c->content,
-                'created_at' => $c->created_at,
-                'updated_at' => $c->updated_at,
+                'created_at' => $c->created_at?->format('Y-m-d H:i:s'),
+                'updated_at' => $c->updated_at?->format('Y-m-d H:i:s'),
             ]),
         ];
     }
@@ -146,7 +146,6 @@ class ShowService
         return [
             'types' => ShowType::select('id', 'name')->get(),
             'categories' => Category::select('id', 'name')->get(),
-            'tags' => Tag::select('id', 'name')->get(),
             'countries' => Country::select('id', 'name')->get(),
             'streaming_platforms' => StreamingPlatform::select('id', 'name')->get(),
         ];
