@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\TagService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -15,16 +16,16 @@ class TagController extends Controller
         $this->tagService = $tagService;
     }
 
-    public function search(Request $request)
+    /**
+     * GET /api/tags/search?q=action
+     */
+    public function search(Request $request): JsonResponse
     {
-        $query = $request->input('query', '');
-        $limit = (int) $request->input('limit', 10);
+        $query = $request->query('q', '');
+        $limit = (int) $request->query('limit', 5);
 
-        return response()->json($this->tagService->search($query, $limit));
-    }
+        $tags = $this->tagService->search($query, $limit);
 
-    public function index()
-    {
-        return response()->json($this->tagService->getAll());
+        return response()->json($tags);
     }
 }
