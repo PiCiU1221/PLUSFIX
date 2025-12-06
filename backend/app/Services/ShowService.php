@@ -103,7 +103,7 @@ class ShowService
             'id' => $show->id,
             'title' => $show->title,
             'type' => $show->type?->name,
-            'rating' => $show->rating,
+            'rating' => $show->rating !== null ? number_format($show->rating, 2) : null,
             'release_year' => $show->release_year,
             'popularity' => $show->popularity,
             'description' => $show->description,
@@ -132,12 +132,16 @@ class ShowService
                     ];
                 }),
             ] : null,
-            'comments' => $show->comments->map(fn($c) => [
-                'id' => $c->id,
-                'content' => $c->content,
-                'created_at' => $c->created_at?->format('Y-m-d H:i:s'),
-                'updated_at' => $c->updated_at?->format('Y-m-d H:i:s'),
-            ]),
+            'comments' => $show->comments
+                ->sortByDesc('updated_at')
+                ->map(fn($c) => [
+                    'id' => $c->id,
+                    'content' => $c->content,
+                    'created_at' => $c->created_at?->format('Y-m-d H:i:s'),
+                    'updated_at' => $c->updated_at?->format('Y-m-d H:i:s'),
+                ])
+                ->values()
+                ->toArray(),
         ];
     }
 
