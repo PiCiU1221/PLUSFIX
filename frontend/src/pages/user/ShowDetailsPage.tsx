@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
     Box, Typography, Button, CircularProgress, CardMedia, Chip,
     Stack, Divider, Accordion, AccordionSummary, AccordionDetails,
-    List, ListItem, ListItemText, Avatar, TextField, Rating,
+    List, ListItem, ListItemText, TextField, Rating,
     Grid, Checkbox, FormControlLabel
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -287,7 +287,6 @@ function ShowDetailsPage() {
                         {show.persons.map((person, index) => (
                             <Chip
                                 key={index}
-                                avatar={<Avatar>{person.name[0]}</Avatar>}
                                 label={`${person.name} (${person.role})`}
                             />
                         ))}
