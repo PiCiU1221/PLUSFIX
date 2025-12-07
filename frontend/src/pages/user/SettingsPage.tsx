@@ -9,26 +9,30 @@ type SettingsPageProps = {
 export default function SettingsPage({ mode, setMode }: SettingsPageProps) {
     return (
         <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                <SettingsIcon color="primary" sx={{ mr: 1 }} /> Settings
-            </Typography>
+            <Box sx={{ maxWidth: 600, mx: "auto" }}>
 
-            <Paper sx={{ p: 3, maxWidth: 600 }}>
-                <Typography variant="h6" gutterBottom>
-                    Preferences
+                <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                    <SettingsIcon color="primary" sx={{ mr: 1 }} />
+                    Settings
                 </Typography>
 
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={mode === "dark"}
-                            onChange={() => setMode(mode === "light" ? "dark" : "light")}
-                        />
-                    }
-                    label="Dark mode"
-                />
+                <Paper sx={{ p: 3, width: "100%" }}>
+                    <Typography variant="h6" gutterBottom>
+                        Preferences
+                    </Typography>
 
-            </Paper>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={mode === "dark"}
+                                onChange={() => setMode(mode === "light" ? "dark" : "light")}
+                            />
+                        }
+                        label="Dark mode"
+                    />
+                </Paper>
+
+            </Box>
         </Box>
     );
 }
