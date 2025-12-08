@@ -3,13 +3,27 @@ import { useParams } from "react-router-dom";
 import {
     Box, Typography, Button, CircularProgress, CardMedia, Chip,
     Stack, Divider, Accordion, AccordionSummary, AccordionDetails,
-    List, ListItem, ListItemText, Avatar, TextField, Rating,
-    Grid
+    List, ListItem, ListItemText, TextField, Rating,
+    Grid, Checkbox, FormControlLabel
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
 import { API_BASE_URL } from "../../config.ts";
 import type { ShowDetails } from "../../types/ShowDetails.ts";
-import {useSnackbar} from "../../components/snackbar/SnackbarContext.tsx";
+import { useSnackbar } from "../../components/snackbar/SnackbarContext.tsx";
+import {
+    saveToLocalStorage,
+    removeFromLocalStorage,
+    getFromLocalStorage,
+    getWatchedEpisodes,
+    toggleWatchedEpisode,
+    FAVORITES_KEY,
+    WATCHED_KEY
+} from "../../utils/localStorage.ts";
 
 function ShowDetailsPage() {
     const { id } = useParams<{ id: string }>();
@@ -22,6 +36,12 @@ function ShowDetailsPage() {
     const [submittingComment, setSubmittingComment] = useState(false);
 
     const [userRating, setUserRating] = useState<number | null>(null);
+    const [isRated, setIsRated] = useState(false);
+
+    const [watchedEpisodes, setWatchedEpisodes] = useState<string[]>([]);
+
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isWatched, setIsWatched] = useState(false);
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/shows/${id}`)
@@ -36,6 +56,42 @@ function ShowDetailsPage() {
                 setLoading(false);
             });
     }, [id, showMessage]);
+
+    useEffect(() => {
+        if (!id || !show) return;
+
+        const allRatings = JSON.parse(localStorage.getItem("user_ratings") || "{}");
+        if (allRatings[id]) {
+            setUserRating(allRatings[id]);
+            setIsRated(true);
+        }
+
+        const favs = getFromLocalStorage(FAVORITES_KEY);
+        const isFav = favs.some((item) => item.id === show.id);
+        setIsFavorite(isFav);
+
+        const watched = getFromLocalStorage(WATCHED_KEY);
+        const isW = watched.some((item) => item.id === show.id);
+        setIsWatched(isW);
+
+    }, [id, show]);
+
+    useEffect(() => {
+        if (show?.type === "Serial") {
+            const saved = getWatchedEpisodes(show.id);
+            setWatchedEpisodes(saved);
+        }
+    }, [show]);
+
+    const handleEpisodeToggle = (episodeId: string) => {
+        if (!show) return;
+        toggleWatchedEpisode(show.id, episodeId);
+        setWatchedEpisodes((prev) =>
+            prev.includes(episodeId)
+                ? prev.filter((id) => id !== episodeId)
+                : [...prev, episodeId]
+        );
+    };
 
     const handleCommentSubmit = async () => {
         if (!commentContent.trim()) return;
@@ -65,7 +121,7 @@ function ShowDetailsPage() {
     };
 
     const handleRate = async (newValue: number | null) => {
-        if (!newValue) return;
+        if (!newValue || !id || isRated) return;
 
         setUserRating(newValue);
 
@@ -77,13 +133,47 @@ function ShowDetailsPage() {
             });
 
             if (response.ok) {
+                const allRatings = JSON.parse(localStorage.getItem("user_ratings") || "{}");
+                allRatings[id] = newValue;
+                localStorage.setItem("user_ratings", JSON.stringify(allRatings));
+                setIsRated(true);
                 showMessage("Rating saved successfully!", "success");
             } else {
+                setUserRating(null);
                 showMessage("Failed to save rating", "error");
             }
         } catch (error) {
             console.error(error);
+            setUserRating(null);
             showMessage("Network error while saving rating", "error");
+        }
+    };
+
+    const handleToggleFavorite = () => {
+        if (!show) return;
+
+        if (isFavorite) {
+            removeFromLocalStorage(FAVORITES_KEY, show.id);
+            setIsFavorite(false);
+            showMessage("Removed from Favorites", "info");
+        } else {
+            saveToLocalStorage(FAVORITES_KEY, show);
+            setIsFavorite(true);
+            showMessage("Added to Favorites!", "success");
+        }
+    };
+
+    const handleToggleWatched = () => {
+        if (!show) return;
+
+        if (isWatched) {
+            removeFromLocalStorage(WATCHED_KEY, show.id);
+            setIsWatched(false);
+            showMessage("Removed from Watched list", "info");
+        } else {
+            saveToLocalStorage(WATCHED_KEY, show);
+            setIsWatched(true);
+            showMessage("Marked as Watched!", "success");
         }
     };
 
@@ -107,6 +197,7 @@ function ShowDetailsPage() {
                     />
                 </Grid>
 
+                {/* Details */}
                 <Grid size={{ xs: 12, md: 8 }}>
                     <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 1 }}>
                         <Typography variant="h3" component="h1" fontWeight="bold">
@@ -124,19 +215,61 @@ function ShowDetailsPage() {
                     </Stack>
 
                     <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography component="legend">Your Rating:</Typography>
+                        <Typography component="legend">
+                            {isRated ? "You rated this:" : "Rate this show:"}
+                        </Typography>
                         <Rating
                             name="user-rating"
                             value={userRating}
-                            onChange={(_, newValue) => handleRate(newValue)}
+                            onChange={(_, newValue) => !isRated && handleRate(newValue)}
+                            readOnly={isRated}
                         />
+                        {isRated && (
+                            <Typography variant="caption" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                Saved ✓
+                            </Typography>
+                        )}
                     </Box>
 
-                    <Box sx={{ mb: 4 }}>
-                        <Button variant="contained" size="large" sx={{ mr: 2 }}>
-                            Add to Favorite
+                    {/* Buttons */}
+                    <Box sx={{ mb: 4, display: 'flex', gap: 2 }}>
+                        <Button
+                            variant={isFavorite ? "outlined" : "contained"}
+                            color={isFavorite ? "secondary" : "primary"}
+                            size="large"
+                            onClick={handleToggleFavorite}
+                        >
+                            {isFavorite ? (
+                                <>
+                                    <FavoriteBorderIcon sx={{ mr: 1.5 }} />
+                                    Remove Favorite
+                                </>
+                            ) : (
+                                <>
+                                    <FavoriteIcon sx={{ mr: 1.5 }} />
+                                    Add to Favorites
+                                </>
+                            )}
                         </Button>
-                        <Button variant="outlined" size="large">Watched</Button>
+
+                        <Button
+                            variant={isWatched ? "outlined" : "outlined"}
+                            color={isWatched ? "secondary" : "primary"}
+                            size="large"
+                            onClick={handleToggleWatched}
+                        >
+                            {isWatched ? (
+                                <>
+                                    <VisibilityOffIcon sx={{ mr: 1.5 }} />
+                                    Remove Watched
+                                </>
+                            ) : (
+                                <>
+                                    <VisibilityIcon sx={{ mr: 1.5 }} />
+                                    Mark Watched
+                                </>
+                            )}
+                        </Button>
                     </Box>
 
                     <Typography variant="h5" gutterBottom fontWeight="bold">About</Typography>
@@ -154,28 +287,52 @@ function ShowDetailsPage() {
                         {show.persons.map((person, index) => (
                             <Chip
                                 key={index}
-                                avatar={<Avatar>{person.name[0]}</Avatar>}
                                 label={`${person.name} (${person.role})`}
                             />
                         ))}
                     </Box>
                 </Grid>
 
+                {/* Seasons */}
                 {show.type === 'Serial' && show.series_meta && (
                     <Grid size={{ xs: 12 }}>
-                        <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>Seasons</Typography>
+                        <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
+                            Seasons
+                        </Typography>
+
                         {show.series_meta.seasons.map((season) => (
                             <Accordion key={season.season_number}>
                                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Typography>Season {season.season_number}</Typography>
+                                    <Typography>
+                                        Season {season.season_number}{" "}
+                                        <Typography component="span" variant="caption" sx={{ ml: 2 }}>
+                                            {season.episodes.filter(ep => watchedEpisodes.includes(`${season.season_number}-${ep.episode_number}`)).length} / {season.episodes.length} watched
+                                        </Typography>
+                                    </Typography>
                                 </AccordionSummary>
+
                                 <AccordionDetails>
                                     <List dense>
-                                        {season.episodes.map((ep) => (
-                                            <ListItem key={ep.episode_number}>
-                                                <ListItemText primary={`${ep.episode_number}. ${ep.title}`} />
-                                            </ListItem>
-                                        ))}
+                                        {season.episodes.map((ep) => {
+                                            const episodeId = `${season.season_number}-${ep.episode_number}`;
+                                            const isWatched = watchedEpisodes.includes(episodeId);
+
+                                            return (
+                                                <ListItem key={ep.episode_number}
+                                                          sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={isWatched}
+                                                                onChange={() => handleEpisodeToggle(episodeId)}
+                                                                color="primary"
+                                                            />
+                                                        }
+                                                        label={`${ep.episode_number}. ${ep.title}`}
+                                                    />
+                                                </ListItem>
+                                            );
+                                        })}
                                     </List>
                                 </AccordionDetails>
                             </Accordion>
@@ -183,6 +340,7 @@ function ShowDetailsPage() {
                     </Grid>
                 )}
 
+                {/* Comments */}
                 <Grid size={{ xs: 12 }}>
                     <Divider sx={{ my: 4 }} />
                     <Typography variant="h4" gutterBottom>Comments</Typography>
@@ -210,7 +368,8 @@ function ShowDetailsPage() {
 
                     <List>
                         {show.comments.map((comment) => (
-                            <ListItem key={comment.id} alignItems="flex-start" sx={{ bgcolor: 'background.paper', mb: 2, borderRadius: 1, boxShadow: 1 }}>
+                            <ListItem key={comment.id} alignItems="flex-start"
+                                      sx={{ bgcolor: 'background.paper', mb: 2, borderRadius: 1, boxShadow: 1 }}>
                                 <ListItemText
                                     primary={
                                         <Typography variant="body1" component="div" sx={{ mb: 1 }}>

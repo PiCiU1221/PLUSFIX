@@ -4,7 +4,6 @@ import LandingPage from "./pages/user/LandingPage";
 import SearchPage from "./pages/user/SearchPage";
 import FavoritesPage from "./pages/user/FavoritesPage";
 import ShowDetailsPage from "./pages/user/ShowDetailsPage";
-import RatingPage from "./pages/user/RatingPage";
 import AnimatedRoutes from "./components/AnimatedRoutes";
 import ModeratorDashboard from "./pages/moderator/ModeratorDashboard";
 import ModeratorLogin from "./pages/moderator/ModeratorLogin";
@@ -23,10 +22,8 @@ function App({ mode, setMode }: AppProps) {
         { path: "/favorites", element: <FavoritesPage /> },
         { path: "/watched", element: <WatchedPage /> },
         { path: "/details/:id", element: <ShowDetailsPage /> },
-        { path: "/rate/:id", element: <RatingPage /> },
         { path: "/moderator-login", element: <ModeratorLogin /> },
         { path: "/moderator-dashboard", element: <ModeratorDashboard /> },
-
         { path: "/settings", element: <SettingsPage mode={mode} setMode={setMode} /> },
     ];
 
